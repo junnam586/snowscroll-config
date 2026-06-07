@@ -1,6 +1,6 @@
 {
-  "configVersion": 10,
-  "updatedAt": "2026-06-08T00:00:00Z",
+  "configVersion": 11,
+  "updatedAt": "2026-06-08T01:00:00Z",
   "_comment": "HOSTED config (the over-the-air counterpart of the app's bundled default). Serve this at the stable HTTPS URL referenced by FilterConfigStore.remoteURL. It must use a configVersion STRICTLY GREATER than whatever the app currently has for the app to adopt it (PRD §5.5). This file mirrors the bundled feature set (the dedicated reel SURFACES only — see filters-default.json _scopeNote). To validate acceptance test §5.5(b): patch/add a selector here, bump configVersion with scripts/bump-config-version.py, publish — clients adopt it on next launch with no App Store update. Selectors are ILLUSTRATIVE — validate against the live mobile DOM and patch here over time.",
   "platforms": {
     "instagram": {
@@ -53,48 +53,38 @@
     "youtube": {
       "urlFilter": ".*youtube\\.com.*",
       "features": {
-        "shorts_shelf": {
-          "title": "Shorts shelves",
+        "shorts": {
+          "title": "Shorts",
           "defaultOn": true,
           "locked": true,
-          "cssSelectors": ["ytm-reel-shelf-renderer", "ytm-shorts-lockup-view-model"],
-          "jsSelectors": ["ytm-reel-shelf-renderer", "ytm-rich-section-renderer << ytm-shorts-lockup-view-model", "grid-shelf-view-model << ytm-shorts-lockup-view-model"]
-        },
-        "shorts_tab": {
-          "title": "Shorts navigation button",
-          "defaultOn": true,
-          "locked": true,
-          "cssSelectors": [],
-          "jsSelectors": ["ytm-pivot-bar-item-renderer << .pivot-shorts", "ytm-pivot-bar-item-renderer << a[href*='/shorts']"]
-        },
-        "shorts_in_results": {
-          "title": "Shorts in feed, search & channels",
-          "defaultOn": true,
-          "locked": true,
-          "cssSelectors": ["yt-tab-shape[tab-title='Shorts']"],
-          "jsSelectors": ["ytm-video-with-context-renderer << ytm-thumbnail-overlay-time-status-renderer[data-style='SHORTS']", "ytm-video-with-context-renderer << a[href*='/shorts/']"]
+          "cssSelectors": ["ytm-reel-shelf-renderer", "ytm-shorts-lockup-view-model", "yt-tab-shape[tab-title='Shorts']"],
+          "jsSelectors": ["ytm-reel-shelf-renderer", "ytm-rich-section-renderer << ytm-shorts-lockup-view-model", "grid-shelf-view-model << ytm-shorts-lockup-view-model", "ytm-pivot-bar-item-renderer << .pivot-shorts", "ytm-pivot-bar-item-renderer << a[href*='/shorts']", "ytm-video-with-context-renderer << ytm-thumbnail-overlay-time-status-renderer[data-style='SHORTS']", "ytm-video-with-context-renderer << a[href*='/shorts/']"]
         },
         "home_feed": {
           "title": "Home feed",
           "defaultOn": true,
+          "pro": true,
           "cssSelectors": [],
           "jsSelectors": ["@home ytm-rich-grid-renderer"]
         },
         "subs_tab": {
           "title": "Subscriptions button",
           "defaultOn": true,
+          "pro": true,
           "cssSelectors": [],
           "jsSelectors": ["ytm-pivot-bar-item-renderer << .pivot-subs"]
         },
         "related": {
           "title": "Suggested videos (watch page)",
           "defaultOn": true,
+          "pro": true,
           "cssSelectors": [],
           "jsSelectors": ["@watch js:ytRelated"]
         },
         "comments": {
           "title": "Comments (watch page)",
           "defaultOn": true,
+          "pro": true,
           "cssSelectors": [],
           "jsSelectors": ["@watch js:ytComments"]
         }
