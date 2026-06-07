@@ -1,6 +1,6 @@
 {
-  "configVersion": 12,
-  "updatedAt": "2026-06-08T02:00:00Z",
+  "configVersion": 13,
+  "updatedAt": "2026-06-08T03:00:00Z",
   "_comment": "HOSTED config (the over-the-air counterpart of the app's bundled default). Serve this at the stable HTTPS URL referenced by FilterConfigStore.remoteURL. It must use a configVersion STRICTLY GREATER than whatever the app currently has for the app to adopt it (PRD §5.5). This file mirrors the bundled feature set (the dedicated reel SURFACES only — see filters-default.json _scopeNote). To validate acceptance test §5.5(b): patch/add a selector here, bump configVersion with scripts/bump-config-version.py, publish — clients adopt it on next launch with no App Store update. Selectors are ILLUSTRATIVE — validate against the live mobile DOM and patch here over time.",
   "platforms": {
     "instagram": {
@@ -128,27 +128,38 @@
     "x": {
       "urlFilter": ".*x\\.com.*",
       "features": {
-        "home_feed": {
-          "title": "Home feed & tab",
+        "for_you": {
+          "title": "For You feed (keeps Following)",
           "defaultOn": true,
+          "locked": true,
           "cssSelectors": [],
-          "jsSelectors": ["[aria-label^='Timeline: Your Home']", "[data-testid='AppTabBar_Home_Link']"]
+          "jsSelectors": ["@home [aria-label^='Timeline: Your Home']", "js:xFollowing"]
         },
         "explore_feed": {
-          "title": "Explore / Search feed & tab",
+          "title": "Explore feed (keeps Search)",
           "defaultOn": true,
+          "locked": true,
           "cssSelectors": [],
-          "jsSelectors": ["@explore [aria-label^='Timeline']", "[data-testid='AppTabBar_Explore_Link']"]
+          "jsSelectors": ["@explore [aria-label^='Timeline']"]
+        },
+        "following": {
+          "title": "Following feed",
+          "defaultOn": false,
+          "pro": true,
+          "cssSelectors": [],
+          "jsSelectors": ["@home [aria-label^='Timeline:']"]
         },
         "grok_tab": {
           "title": "Grok tab",
-          "defaultOn": true,
+          "defaultOn": false,
+          "pro": true,
           "cssSelectors": [],
           "jsSelectors": ["a[href='/i/grok']", "[aria-label='Grok']", "[data-testid='AppTabBar_Grok_Link']"]
         },
         "notifications_tab": {
           "title": "Notifications tab",
-          "defaultOn": true,
+          "defaultOn": false,
+          "pro": true,
           "cssSelectors": [],
           "jsSelectors": ["a[href='/notifications']", "[data-testid='AppTabBar_Notifications_Link']"]
         }
