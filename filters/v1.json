@@ -1,6 +1,6 @@
 {
-  "configVersion": 6,
-  "updatedAt": "2026-06-07T03:00:00Z",
+  "configVersion": 7,
+  "updatedAt": "2026-06-07T04:00:00Z",
   "_comment": "HOSTED config (the over-the-air counterpart of the app's bundled default). Serve this at the stable HTTPS URL referenced by FilterConfigStore.remoteURL. It must use a configVersion STRICTLY GREATER than whatever the app currently has for the app to adopt it (PRD §5.5). This file mirrors the bundled feature set (the dedicated reel SURFACES only — see filters-default.json _scopeNote). To validate acceptance test §5.5(b): patch/add a selector here, bump configVersion with scripts/bump-config-version.py, publish — clients adopt it on next launch with no App Store update. Selectors are ILLUSTRATIVE — validate against the live mobile DOM and patch here over time.",
   "platforms": {
     "instagram": {
@@ -159,6 +159,7 @@
         "messaging_only": {
           "title": "Messaging-only mode",
           "defaultOn": true,
+          "locked": true,
           "cssSelectors": [],
           "jsSelectors": ["js:tiktokToMessages", "js:tiktokWall", "[data-e2e='video-card']", "[data-e2e^='video-slide']", "[data-e2e='view-nav-arrow']", "[data-e2e='home-icon']", "[data-e2e='discover-icon']", "[data-e2e='profile-icon']", "[data-e2e='open-titok-icon']", "[class*='ButtonCTAOpenApp']", "[class*='OpenTikTokButton']", "[class*='matrix-smart-wrapper']"]
         }
