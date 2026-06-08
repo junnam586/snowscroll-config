@@ -1,6 +1,6 @@
 {
-  "configVersion": 21,
-  "updatedAt": "2026-06-08T11:00:00Z",
+  "configVersion": 22,
+  "updatedAt": "2026-06-08T12:00:00Z",
   "_comment": "HOSTED config (the over-the-air counterpart of the app's bundled default). Serve this at the stable HTTPS URL referenced by FilterConfigStore.remoteURL. It must use a configVersion STRICTLY GREATER than whatever the app currently has for the app to adopt it (PRD §5.5). This file mirrors the bundled feature set (the dedicated reel SURFACES only — see filters-default.json _scopeNote). To validate acceptance test §5.5(b): patch/add a selector here, bump configVersion with scripts/bump-config-version.py, publish — clients adopt it on next launch with no App Store update. Selectors are ILLUSTRATIVE — validate against the live mobile DOM and patch here over time.",
   "platforms": {
     "instagram": {
@@ -58,7 +58,7 @@
           "defaultOn": true,
           "locked": true,
           "cssSelectors": ["ytm-reel-shelf-renderer", "ytm-shorts-lockup-view-model", "yt-tab-shape[tab-title='Shorts']"],
-          "jsSelectors": ["ytm-reel-shelf-renderer", "ytm-rich-section-renderer << ytm-shorts-lockup-view-model", "grid-shelf-view-model << ytm-shorts-lockup-view-model", "ytm-pivot-bar-item-renderer << .pivot-shorts", "ytm-pivot-bar-item-renderer << a[href*='/shorts']", "ytm-video-with-context-renderer << ytm-thumbnail-overlay-time-status-renderer[data-style='SHORTS']", "ytm-video-with-context-renderer << a[href*='/shorts/']"]
+          "jsSelectors": ["ytm-reel-shelf-renderer", "ytm-rich-section-renderer << ytm-shorts-lockup-view-model", "grid-shelf-view-model << ytm-shorts-lockup-view-model", "ytm-pivot-bar-item-renderer << .pivot-shorts", "ytm-pivot-bar-item-renderer << a[href*='/shorts']", "ytm-video-with-context-renderer << ytm-thumbnail-overlay-time-status-renderer[data-style='SHORTS']", "ytm-video-with-context-renderer << a[href*='/shorts/']", "js:ytNav"]
         },
         "home_feed": {
           "title": "Home feed",
@@ -112,7 +112,7 @@
           "defaultOn": true,
           "locked": true,
           "cssSelectors": [],
-          "jsSelectors": ["[role='tab'][aria-label^='video']", "[role='tab'][aria-label^='Video']", "[role='tab'][aria-label^='watch']", "a[href^='/watch/']"]
+          "jsSelectors": ["[role='tab'][aria-label^='video']", "[role='tab'][aria-label^='Video']", "[role='tab'][aria-label^='watch']", "a[href^='/watch/']", "js:fbNav"]
         },
         "friends_only": {
           "title": "Friends-only home feed",
