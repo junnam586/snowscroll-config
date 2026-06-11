@@ -1,24 +1,35 @@
 {
-  "configVersion": 30,
-  "updatedAt": "2026-06-08T12:00:00Z",
-  "_comment": "HOSTED config (the over-the-air counterpart of the app's bundled default). Serve this at the stable HTTPS URL referenced by FilterConfigStore.remoteURL. It must use a configVersion STRICTLY GREATER than whatever the app currently has for the app to adopt it (PRD §5.5). This file mirrors the bundled feature set (the dedicated reel SURFACES only — see filters-default.json _scopeNote). To validate acceptance test §5.5(b): patch/add a selector here, bump configVersion with scripts/bump-config-version.py, publish — clients adopt it on next launch with no App Store update. Selectors are ILLUSTRATIVE — validate against the live mobile DOM and patch here over time.",
+  "configVersion": 33,
+  "updatedAt": "2026-06-11T12:00:00Z",
+  "_comment": "HOSTED config served at FilterConfigStore.remoteURL. Must use a strictly greater configVersion than the app's bundled default to be adopted OTA. Edit selectors here and bump configVersion to push a filter fix with no app update.",
+  "_scopeNote": "v1 SCOPE: hide the dedicated infinite reel SURFACES (Reels tab, Explore, YouTube Shorts) - reliable and smooth, and what SocialLite/ScrollGuard actually do. We do NOT delete reels/suggested posts from the HOME timeline: removing a large fraction of an infinite feed makes Instagram's loader spiral (white-out + lag) and the home feed is bounded anyway. The reels_in_feed / suggested features were therefore REMOVED from the shipped config (no footgun toggle). The 'A << B' ancestor mechanism that powered them still exists in feed-filter.js (used by YouTube Shorts) - so if a reliable in-feed approach is found later, those features can be re-introduced via the HOSTED config with no app update. EXPLORE was also removed: on Instagram the magnifying-glass nav IS the Explore link (/explore/), so hiding it also killed Search - which PRD \u00a75.2 requires keeping. A future feature could hide the explore recommendations GRID while preserving the search bar (needs a validated explore-page selector). For now the only Instagram filters are the Reels tab/icon and the 'Open app' button.",
   "platforms": {
     "instagram": {
-      "urlFilter": ".*instagram\\.com.*",
+      "urlFilter": "^https?://([^/]*\\.)?instagram\\.com[:/]",
       "features": {
         "reels_tab": {
-          "title": "Reels tab & icon",
+          "title": "Reels",
           "defaultOn": true,
           "locked": true,
-          "cssSelectors": ["a[href*='/reels/']", "svg[aria-label='Reels']", "[aria-label='Reels']"],
-          "jsSelectors": ["a[href*='/reels/']", "[aria-label='Reels']", "js:igNav"]
+          "cssSelectors": [
+            "a[href*='/reels/']",
+            "svg[aria-label='Reels']",
+            "[aria-label='Reels']"
+          ],
+          "jsSelectors": [
+            "a[href*='/reels/']",
+            "[aria-label='Reels']",
+            "js:igNav"
+          ]
         },
         "search_grid": {
-          "title": "Explore grid on the Search page",
+          "title": "Explore grid",
           "defaultOn": true,
           "locked": true,
           "cssSelectors": [],
-          "jsSelectors": ["@explore main > div"]
+          "jsSelectors": [
+            "@explore main > div"
+          ]
         },
         "app_redirect": {
           "title": "\"Open Instagram app\" button",
@@ -26,21 +37,33 @@
           "locked": true,
           "hidden": true,
           "cssSelectors": [],
-          "jsSelectors": ["text=Open Instagram", "text=Open the app", "text=Open app", "text=Use the app", "text=Continue in the app", "text=Get the app"]
+          "jsSelectors": [
+            "js:igAppNag",
+            "text=Open Instagram",
+            "text=Open the app",
+            "text=Open app",
+            "text=Use the app",
+            "text=Continue in the app",
+            "text=Get the app"
+          ]
         },
         "home_feed": {
-          "title": "Home feed (keeps Stories)",
+          "title": "Home feed",
           "defaultOn": false,
           "pro": true,
           "cssSelectors": [],
-          "jsSelectors": ["@home js:homeFeed"]
+          "jsSelectors": [
+            "@home js:homeFeed"
+          ]
         },
         "stories": {
-          "title": "Stories tray",
+          "title": "Stories",
           "defaultOn": false,
           "pro": true,
           "cssSelectors": [],
-          "jsSelectors": ["@home js:stories"]
+          "jsSelectors": [
+            "@home js:stories"
+          ]
         },
         "ads": {
           "title": "Ads",
@@ -52,61 +75,93 @@
       }
     },
     "youtube": {
-      "urlFilter": ".*youtube\\.com.*",
+      "urlFilter": "^https?://([^/]*\\.)?youtube\\.com[:/]",
       "features": {
         "shorts": {
           "title": "Shorts",
           "defaultOn": true,
           "locked": true,
-          "cssSelectors": ["ytm-reel-shelf-renderer", "ytm-shorts-lockup-view-model", "yt-tab-shape[tab-title='Shorts']"],
-          "jsSelectors": ["ytm-reel-shelf-renderer", "ytm-rich-section-renderer << ytm-shorts-lockup-view-model", "grid-shelf-view-model << ytm-shorts-lockup-view-model", "ytm-pivot-bar-item-renderer << .pivot-shorts", "ytm-pivot-bar-item-renderer << a[href*='/shorts']", "ytm-video-with-context-renderer << ytm-thumbnail-overlay-time-status-renderer[data-style='SHORTS']", "ytm-video-with-context-renderer << a[href*='/shorts/']", "js:ytNav"]
+          "cssSelectors": [
+            "ytm-reel-shelf-renderer",
+            "ytm-shorts-lockup-view-model",
+            "yt-tab-shape[tab-title='Shorts']"
+          ],
+          "jsSelectors": [
+            "ytm-reel-shelf-renderer",
+            "ytm-rich-section-renderer << ytm-shorts-lockup-view-model",
+            "grid-shelf-view-model << ytm-shorts-lockup-view-model",
+            "ytm-pivot-bar-item-renderer << .pivot-shorts",
+            "ytm-pivot-bar-item-renderer << a[href*='/shorts']",
+            "ytm-video-with-context-renderer << ytm-thumbnail-overlay-time-status-renderer[data-style='SHORTS']",
+            "ytm-video-with-context-renderer << a[href*='/shorts/']",
+            "js:ytNav"
+          ]
         },
         "home_feed": {
-          "title": "Home tab & feed",
+          "title": "Home tab",
           "defaultOn": false,
           "pro": true,
           "cssSelectors": [],
-          "jsSelectors": ["@home ytm-rich-grid-renderer", "ytm-pivot-bar-item-renderer << .pivot-w2w", "ytm-pivot-bar-item-renderer << a[href='/']", "js:ytNav"]
+          "jsSelectors": [
+            "@home ytm-rich-grid-renderer",
+            "ytm-pivot-bar-item-renderer << .pivot-w2w",
+            "ytm-pivot-bar-item-renderer << a[href='/']",
+            "js:ytNav"
+          ]
         },
         "subs_tab": {
-          "title": "Subscriptions button",
+          "title": "Subscriptions tab",
           "defaultOn": false,
           "pro": true,
           "cssSelectors": [],
-          "jsSelectors": ["ytm-pivot-bar-item-renderer << .pivot-subs"]
+          "jsSelectors": [
+            "ytm-pivot-bar-item-renderer << .pivot-subs"
+          ]
         },
         "related": {
-          "title": "Suggested videos (watch page)",
+          "title": "Suggested videos",
           "defaultOn": false,
           "pro": true,
           "cssSelectors": [],
-          "jsSelectors": ["@watch js:ytRelated"]
+          "jsSelectors": [
+            "@watch js:ytRelated"
+          ]
         },
         "comments": {
-          "title": "Comments (watch page)",
+          "title": "Comments",
           "defaultOn": false,
           "pro": true,
           "cssSelectors": [],
-          "jsSelectors": ["@watch js:ytComments"]
+          "jsSelectors": [
+            "@watch js:ytComments"
+          ]
         }
       }
     },
     "facebook": {
-      "urlFilter": ".*facebook\\.com.*",
+      "urlFilter": "^https?://([^/]*\\.)?facebook\\.com[:/]",
       "features": {
         "reels": {
           "title": "Reels",
           "defaultOn": true,
           "locked": true,
           "cssSelectors": [],
-          "jsSelectors": ["[role='tab'][aria-label^='reels']", "[role='tab'][aria-label^='Reels']"]
+          "jsSelectors": [
+            "[role='tab'][aria-label^='reels']",
+            "[role='tab'][aria-label^='Reels']"
+          ]
         },
         "watch": {
-          "title": "Watch / Video tab",
+          "title": "Video tab",
           "defaultOn": true,
           "locked": true,
           "cssSelectors": [],
-          "jsSelectors": ["[role='tab'][aria-label^='video']", "[role='tab'][aria-label^='Video']", "[role='tab'][aria-label^='watch']", "[role='tab'][aria-label^='Watch']"]
+          "jsSelectors": [
+            "[role='tab'][aria-label^='video']",
+            "[role='tab'][aria-label^='Video']",
+            "[role='tab'][aria-label^='watch']",
+            "[role='tab'][aria-label^='Watch']"
+          ]
         },
         "app_redirect": {
           "title": "\"Open app\" prompts",
@@ -114,10 +169,21 @@
           "locked": true,
           "hidden": true,
           "cssSelectors": [],
-          "jsSelectors": ["text=Open in app", "text=Open in the app", "text=Open the Facebook app", "text=Open Facebook", "text=Open app", "text=Use the app", "text=Continue in the app", "text=See more on the Facebook app", "text=Get the app", "text=View in app"]
+          "jsSelectors": [
+            "text=Open in app",
+            "text=Open in the app",
+            "text=Open the Facebook app",
+            "text=Open Facebook",
+            "text=Open app",
+            "text=Use the app",
+            "text=Continue in the app",
+            "text=See more on the Facebook app",
+            "text=Get the app",
+            "text=View in app"
+          ]
         },
         "home_feed": {
-          "title": "Remove home feed entirely",
+          "title": "Remove home feed",
           "defaultOn": false,
           "pro": true,
           "cssSelectors": [],
@@ -128,78 +194,123 @@
           "defaultOn": false,
           "pro": true,
           "cssSelectors": [],
-          "jsSelectors": ["[role='tab'][aria-label^='notifications']", "[role='tab'][aria-label^='Notifications']"]
+          "jsSelectors": [
+            "[role='tab'][aria-label^='notifications']",
+            "[role='tab'][aria-label^='Notifications']"
+          ]
         },
         "marketplace": {
           "title": "Marketplace tab",
           "defaultOn": false,
           "pro": true,
           "cssSelectors": [],
-          "jsSelectors": ["[role='tab'][aria-label^='marketplace']", "[role='tab'][aria-label^='Marketplace']"]
+          "jsSelectors": [
+            "[role='tab'][aria-label^='marketplace']",
+            "[role='tab'][aria-label^='Marketplace']"
+          ]
         }
       }
     },
     "x": {
-      "urlFilter": ".*x\\.com.*",
+      "urlFilter": "^https?://([^/]*\\.)?x\\.com[:/]",
       "features": {
         "for_you": {
           "title": "For You feed (keeps Following)",
           "defaultOn": true,
           "locked": true,
           "cssSelectors": [],
-          "jsSelectors": ["js:xFollowing"]
+          "jsSelectors": [
+            "js:xFollowing"
+          ]
         },
         "explore_feed": {
-          "title": "Explore feed (keeps Search)",
+          "title": "Explore feed",
           "defaultOn": true,
           "locked": true,
           "cssSelectors": [],
-          "jsSelectors": ["@explore [aria-label^='Timeline']"]
+          "jsSelectors": [
+            "@explore [aria-label^='Timeline']"
+          ]
         },
         "following": {
           "title": "Following feed",
           "defaultOn": false,
           "pro": true,
-          "cssSelectors": ["[data-testid='AppTabBar_Home_Link']"],
-          "jsSelectors": ["@home [aria-label^='Timeline:']", "[data-testid='AppTabBar_Home_Link']", "js:xNav"]
+          "cssSelectors": [
+            "[data-testid='AppTabBar_Home_Link']"
+          ],
+          "jsSelectors": [
+            "@home [aria-label^='Timeline:']",
+            "[data-testid='AppTabBar_Home_Link']",
+            "js:xNav"
+          ]
         },
         "grok_tab": {
           "title": "Grok tab",
           "defaultOn": false,
           "pro": true,
           "cssSelectors": [],
-          "jsSelectors": ["a[href='/i/grok']", "[aria-label='Grok']", "[data-testid='AppTabBar_Grok_Link']"]
+          "jsSelectors": [
+            "a[href='/i/grok']",
+            "[aria-label='Grok']",
+            "[data-testid='AppTabBar_Grok_Link']"
+          ]
         },
         "notifications_tab": {
           "title": "Notifications tab",
           "defaultOn": false,
           "pro": true,
           "cssSelectors": [],
-          "jsSelectors": ["a[href='/notifications']", "[data-testid='AppTabBar_Notifications_Link']"]
+          "jsSelectors": [
+            "a[href='/notifications']",
+            "[data-testid='AppTabBar_Notifications_Link']"
+          ]
         }
       }
     },
     "tiktok": {
-      "urlFilter": ".*tiktok\\.com.*",
+      "urlFilter": "^https?://([^/]*\\.)?tiktok\\.com[:/]",
       "features": {
         "messaging_only": {
           "title": "Messaging-only mode",
           "defaultOn": true,
           "locked": true,
           "cssSelectors": [],
-          "jsSelectors": ["js:tiktokWall", "[data-e2e='video-card']", "[data-e2e^='video-slide']", "[data-e2e='view-nav-arrow']", "[data-e2e='home-icon']", "[data-e2e='discover-icon']", "[data-e2e='profile-icon']", "[data-e2e='open-titok-icon']", "[class*='ButtonCTAOpenApp']", "[class*='OpenTikTokButton']", "[class*='matrix-smart-wrapper']"]
+          "jsSelectors": [
+            "js:tiktokWall",
+            "[data-e2e='video-card']",
+            "[data-e2e^='video-slide']",
+            "[data-e2e='view-nav-arrow']",
+            "[data-e2e='home-icon']",
+            "[data-e2e='discover-icon']",
+            "[data-e2e='profile-icon']",
+            "[data-e2e='open-titok-icon']",
+            "[class*='ButtonCTAOpenApp']",
+            "[class*='OpenTikTokButton']",
+            "[class*='matrix-smart-wrapper']"
+          ]
         }
       }
     },
     "linkedin": {
-      "urlFilter": ".*linkedin\\.com.*",
+      "urlFilter": "^https?://([^/]*\\.)?linkedin\\.com[:/]",
       "features": {
         "news_feed": {
           "title": "News feed",
           "defaultOn": true,
           "locked": true,
-          "cssSelectors": ["a[aria-label^='Home']", "a[href^='/feed?']"],
-          "jsSelectors": ["ol.feed-container", "[aria-label^='Main Feed']", "div[data-testid='mainFeed']", "a[aria-label^='Home']", "a[href^='/feed?']", "js:liNav"]
+          "cssSelectors": [
+            "a[aria-label^='Home']",
+            "a[href^='/feed?']"
+          ],
+          "jsSelectors": [
+            "ol.feed-container",
+            "[aria-label^='Main Feed']",
+            "div[data-testid='mainFeed']",
+            "a[aria-label^='Home']",
+            "a[href^='/feed?']",
+            "js:liNav"
+          ]
         },
         "app_redirect": {
           "title": "\"Open in app\" prompts",
@@ -207,21 +318,33 @@
           "locked": true,
           "hidden": true,
           "cssSelectors": [],
-          "jsSelectors": [".upsell-content", "js:liUpsell"]
+          "jsSelectors": [
+            ".upsell-content",
+            "js:liUpsell"
+          ]
         },
         "games": {
           "title": "Games",
           "defaultOn": false,
           "pro": true,
           "cssSelectors": [],
-          "jsSelectors": ["a[href*='/games/']", ".feed-shared-update-v2 << a[href*='/games/']", ".fie-impression-container << a[href*='/games/']"]
+          "jsSelectors": [
+            "a[href*='/games/']",
+            ".feed-shared-update-v2 << a[href*='/games/']",
+            ".fie-impression-container << a[href*='/games/']"
+          ]
         },
         "notifications": {
           "title": "Notifications tab",
           "defaultOn": false,
           "pro": true,
           "cssSelectors": [],
-          "jsSelectors": ["a[href^='/notifications']", "a[aria-label^='Notifications']", "a[data-test-app-aware-link][href*='/notifications']", "js:liNav"]
+          "jsSelectors": [
+            "a[href^='/notifications']",
+            "a[aria-label^='Notifications']",
+            "a[data-test-app-aware-link][href*='/notifications']",
+            "js:liNav"
+          ]
         }
       }
     }
