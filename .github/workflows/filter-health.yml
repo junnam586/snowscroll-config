@@ -7,7 +7,7 @@ name: filter-health
 
 on:
   schedule:
-    - cron: "*/10 * * * *"   # every 10 minutes (see note below)
+    - cron: "*/30 * * * *"   # every 30 min (GitHub throttles tighter schedules)   # every 10 minutes (see note below)
   workflow_dispatch: {}      # run it manually any time from the Actions tab
 
 permissions:
