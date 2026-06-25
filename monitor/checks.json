@@ -1,0 +1,44 @@
+[
+  {
+    "platform": "youtube",
+    "label": "Shorts shelf (home)",
+    "url": "https://m.youtube.com/",
+    "selectors": ["ytm-reel-shelf-renderer", "ytm-shorts-lockup-view-model", "[is-shorts]"],
+    "settleMs": 4000,
+    "_note": "RELIABLE, no login. If this hits 0, YouTube changed the Shorts DOM - your shorts filter is probably leaking. YT is your free tier, so this is the most important check."
+  },
+  {
+    "platform": "youtube",
+    "label": "Mobile nav present (sanity)",
+    "url": "https://m.youtube.com/",
+    "selectors": ["ytm-pivot-bar-renderer", "ytm-pivot-bar-item-renderer"],
+    "settleMs": 3000,
+    "_note": "Confirms we got the real mobile DOM (not a consent/bot wall). If THIS is 0, the run itself is suspect, not your selectors."
+  },
+  {
+    "platform": "tiktok",
+    "label": "Feed video cards",
+    "url": "https://www.tiktok.com/",
+    "selectors": ["[data-e2e='video-card']", "[data-e2e='feed-video']", "[data-e2e='recommend-list-item-container']"],
+    "settleMs": 5000,
+    "_note": "RELIABLE, no login. 0 here means TikTok changed its feed DOM - the messaging-only wall may be leaking."
+  },
+  {
+    "platform": "instagram",
+    "label": "Reels nav link",
+    "url": "https://www.instagram.com/",
+    "selectors": ["a[href*='/reels/']", "svg[aria-label='Reels']", "[aria-label='Reels']"],
+    "auth": "instagram",
+    "settleMs": 4000,
+    "_note": "Needs login (set IG_USERNAME/IG_PASSWORD secrets, BURNER account). Often checkpointed in CI - if it skips, fall back to the in-app report + a manual check."
+  },
+  {
+    "platform": "instagram",
+    "label": "Reels viewer / explore",
+    "url": "https://www.instagram.com/explore/",
+    "selectors": ["a[href*='/reels/']", "main a[href*='/p/']"],
+    "auth": "instagram",
+    "settleMs": 4000,
+    "_note": "Explore grid surface. Logged-out IG walls this, hence auth."
+  }
+]
