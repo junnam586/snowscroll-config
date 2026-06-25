@@ -17,6 +17,7 @@ import { readFileSync } from "node:fs";
 
 const checks = JSON.parse(readFileSync(new URL("./checks.json", import.meta.url)));
 const IG_USER = process.env.IG_USERNAME, IG_PASS = process.env.IG_PASSWORD;
+const IG_STATE = process.env.IG_STORAGE_STATE;   // base64 Playwright storageState (PREFERRED for IG)
 
 const results = { broken: [], ok: [], skipped: [] };
 
@@ -48,9 +49,28 @@ async function igLogin(context) {
   } catch { await page.close().catch(() => {}); return false; }
 }
 
+// Verify a REUSED session (from IG_STORAGE_STATE) is still logged in. No login flow happens,
+// so there's nothing for IG to checkpoint - it just loads the feed with existing cookies.
+async function igVerifySession(context) {
+  const page = await context.newPage();
+  try {
+    await page.goto("https://www.instagram.com/", { waitUntil: "domcontentloaded", timeout: 30000 });
+    await page.waitForTimeout(3500);
+    const onLogin = /accounts\/login/.test(page.url());
+    const markers = await page.locator("svg[aria-label='Home'], [aria-label='Home'], a[href*='/direct/']").count();
+    await page.close();
+    return !onLogin && markers > 0;   // logged in iff not bounced to login AND a feed chrome marker exists
+  } catch { await page.close().catch(() => {}); return false; }
+}
+
 async function run() {
   const browser = await chromium.launch();
-  const context = await browser.newContext({ ...devices["iPhone 13"], locale: "en-US" });
+  const ctxOpts = { ...devices["iPhone 13"], locale: "en-US" };
+  if (IG_STATE) {
+    try { ctxOpts.storageState = JSON.parse(Buffer.from(IG_STATE, "base64").toString("utf8")); }
+    catch { console.log("IG_STORAGE_STATE set but not valid base64 JSON - ignoring it."); }
+  }
+  const context = await browser.newContext(ctxOpts);
 
   // Media-blocking: drop images/video/fonts - we only need the DOM structure (does a selector
   // match?), not the pixels. Cuts bandwidth ~80% and speeds every run, which is what keeps
@@ -61,7 +81,11 @@ async function run() {
       : route.continue());
 
   let igAuthed = false;
-  if (checks.some((c) => c.auth === "instagram")) igAuthed = await igLogin(context);
+  if (checks.some((c) => c.auth === "instagram")) {
+    // Prefer reusing a saved session (no checkpoint). Fresh login is the fallback, but IG
+    // usually blocks it from CI IPs - which is the whole reason for the storageState path.
+    igAuthed = ctxOpts.storageState ? await igVerifySession(context) : await igLogin(context);
+  }
 
   for (const c of checks) {
     if (c.auth === "instagram" && !igAuthed) {

@@ -39,6 +39,7 @@ jobs:
           # USE A BURNER ACCOUNT. CI logins are frequently checkpointed; if so, IG checks skip.
           IG_USERNAME: ${{ secrets.IG_USERNAME }}
           IG_PASSWORD: ${{ secrets.IG_PASSWORD }}
+          IG_STORAGE_STATE: ${{ secrets.IG_STORAGE_STATE }}   # base64 storageState - the reliable IG path
         run: |
           set +e
           node check.mjs | tee out.txt
