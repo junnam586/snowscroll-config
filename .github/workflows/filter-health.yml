@@ -45,6 +45,21 @@ jobs:
           echo "code=${PIPESTATUS[0]}" >> "$GITHUB_OUTPUT"
           echo "summary=$(grep '::summary::' out.txt | sed 's/.*::summary:://')" >> "$GITHUB_OUTPUT"
 
+      - name: Heartbeat ping (dead-man's-switch)
+        # Ping healthchecks.io on every run that actually EXECUTED (filters OK *or* broken - the
+        # monitor is alive either way; filter breakage is alerted separately by the issue below).
+        # If these pings ever STOP (workflow disabled, cron not firing, install crash), healthchecks.io
+        # alerts YOU that the watchman fell asleep. That's the "is the monitor itself alive?" cover.
+        if: steps.run.outputs.code == '0' || steps.run.outputs.code == '1'
+        env:
+          HC_URL: ${{ secrets.HEALTHCHECK_URL }}
+        run: |
+          if [ -n "$HC_URL" ]; then
+            curl -fsS -m 10 --retry 3 "$HC_URL" >/dev/null && echo "heartbeat sent" || echo "heartbeat ping failed (non-fatal)"
+          else
+            echo "No HEALTHCHECK_URL secret set; dead-man's-switch disabled."
+          fi
+
       - name: Open/update an issue on breakage
         if: steps.run.outputs.code != '0'
         uses: actions/github-script@v7
