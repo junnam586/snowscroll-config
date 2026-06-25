@@ -1,11 +1,11 @@
 [
   {
     "platform": "youtube",
-    "label": "Shorts shelf (home)",
-    "url": "https://m.youtube.com/",
-    "selectors": ["ytm-reel-shelf-renderer", "ytm-shorts-lockup-view-model", "[is-shorts]"],
-    "settleMs": 4000,
-    "_note": "RELIABLE, no login. If this hits 0, YouTube changed the Shorts DOM - your shorts filter is probably leaking. YT is your free tier, so this is the most important check."
+    "label": "Shorts shelf (search)",
+    "url": "https://m.youtube.com/results?search_query=music",
+    "selectors": ["ytm-reel-shelf-renderer", "ytm-shorts-lockup-view-model", "grid-shelf-view-model"],
+    "settleMs": 5000,
+    "_note": "Logged-out YT *home* doesn't reliably surface a Shorts shelf, but search results do. If this hits 0, YouTube changed the Shorts shelf DOM - your shorts filter is probably leaking. YT is your free tier, so this is the most important check."
   },
   {
     "platform": "youtube",
