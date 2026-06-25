@@ -52,6 +52,14 @@ async function run() {
   const browser = await chromium.launch();
   const context = await browser.newContext({ ...devices["iPhone 13"], locale: "en-US" });
 
+  // Media-blocking: drop images/video/fonts - we only need the DOM structure (does a selector
+  // match?), not the pixels. Cuts bandwidth ~80% and speeds every run, which is what keeps
+  // residential/home-IP routing cheap if you ever need it. CSS/JS still load, so the DOM is intact.
+  await context.route("**/*", (route) =>
+    ["image", "media", "font"].includes(route.request().resourceType())
+      ? route.abort()
+      : route.continue());
+
   let igAuthed = false;
   if (checks.some((c) => c.auth === "instagram")) igAuthed = await igLogin(context);
 
